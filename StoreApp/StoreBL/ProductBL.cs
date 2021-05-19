@@ -44,7 +44,7 @@ namespace StoreBL
 
         public HashSet<Item> GetAvaliableProducts(Location location)
         {
-            HashSet<Item> inventories = _repo.GetAllInventory(location);
+            HashSet<Item> inventories = _repo.GetAllInventories(location);
             return inventories.Where(o => o.Quantity > 0).ToHashSet();
         }
 

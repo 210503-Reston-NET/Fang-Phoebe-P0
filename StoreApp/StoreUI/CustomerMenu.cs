@@ -18,26 +18,18 @@ namespace StoreUI
             bool repeat = true;
             do
             {
-                Console.WriteLine("You're on Customer Menu");
+                Console.WriteLine("Hello. Enter Begin to sign up");
                 Console.WriteLine("What would you like to do?");
                 Console.WriteLine("[0] Go back to main");
-                Console.WriteLine("[1] Search a customer");
-                Console.WriteLine("[2] Add a new customer"); 
-                Console.WriteLine("[3] View all customers");
+                Console.WriteLine("[1] Begin");
                 string input = Console.ReadLine();
                 switch (input)
                 {
                     case "0":
                         repeat = false;
                         break;
-                    case "1":
-                        SearchCustomer();
-                        break;
                     case "2":
                         AddCustomer();
-                        break;
-                    case "3":
-                        ViewAllCustomer();
                         break;
                     default:
                         Console.WriteLine("Invalid input");

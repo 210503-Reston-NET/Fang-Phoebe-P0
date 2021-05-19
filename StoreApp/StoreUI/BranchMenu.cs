@@ -9,6 +9,7 @@ namespace StoreUI
     {
         private ILocationBL _locationBL;
         private IValidationService _validate;
+
         public BranchMenu(ILocationBL locationBL, IValidationService validate)
         {
             this._locationBL = locationBL;
@@ -19,11 +20,11 @@ namespace StoreUI
             bool repeat = true;
             do
             {
-                Console.WriteLine("You're on store branch Menu");
+                Console.WriteLine($"Hello Happy Lemon Store Manager - Welcome to the Main Menu");
                 Console.WriteLine("What would you like to do?");
-                Console.WriteLine("[0] Go back to main");
-                Console.WriteLine("[1] Add a new branch location");
-                Console.WriteLine("[2] Search a branch location");
+                Console.WriteLine("[0] Sign Off");
+                Console.WriteLine("[1] Manage a branch location");
+                Console.WriteLine("[2] Open a new branch location");
                 Console.WriteLine("[3] View all branch locations");
                 string input = Console.ReadLine();
                 switch (input)
@@ -32,10 +33,10 @@ namespace StoreUI
                         repeat = false;
                         break;
                     case "1":
-                        AddLocation();
+                        MenuFactory.GetMenu("inventory").Start();
                         break;
                     case "2":
-                        MenuFactory.GetMenu("inventory").Start();
+                        AddLocation();
                         break;
                     case "3":
                         ViewAllLocations();

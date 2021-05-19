@@ -13,6 +13,7 @@ namespace StoreUI
         private IProductBL _productBL;
         private IInventoryBL _inventoryBL;
         private IOrderBL _orderBL;
+        private Customer customer;
         private IValidationService _validate;
    
         public OrderMenu(ICustomerBL customerBL, ILocationBL locationBL, IProductBL productBL, IInventoryBL inventoryBL, IOrderBL orderBL, IValidationService validate)
@@ -23,6 +24,8 @@ namespace StoreUI
             _inventoryBL = inventoryBL;
             _orderBL = orderBL;
             _validate = validate;
+            customer = SearchCustomer();
+
         }
 
         public void Start()
@@ -30,29 +33,24 @@ namespace StoreUI
             bool repeat = true;
             do
             {
-                Console.WriteLine("[0] Go back to main");
+                Console.WriteLine($"Hello {customer.FullName}, Welcome back!");
+                Console.WriteLine($"What would you like to get today?");
+                Console.WriteLine("[0] Sign Off");
                 Console.WriteLine("[1] Place a new order");
-                Console.WriteLine("[2] View order Histories customer");
-                Console.WriteLine("[3] View order Histories by location");
+                Console.WriteLine("[2] View order Histories");
                 string input = Console.ReadLine();
                 switch (input)
                 {
                     case "0" :
                         repeat = false;
+                        Console.WriteLine("Have a nice day!");
                         break;   
                     case "1" : 
                         PlaceOrders();
                         break;                
                     case "2" : 
-                        //ViewOrders();
-                        DisplayProducts(new Location());
-                        //ViewOrderByCustomer();
+                        ViewOrderByCustomer();
                         break;    
-                    case "3" : 
-                        //
-                        GetInventory();
-                        ViewOrderByLocation();
-                        break;  
                     default:
                         Console.WriteLine("Invalid Input");
                         break;
@@ -69,7 +67,7 @@ namespace StoreUI
         {
             //location = SearchBranch();
             HashSet<Item> productItems = _productBL.GetAvaliableProducts(location);
-            var table = new ConsoleTable("ProductId", "Product Name", "Price", "Left in Stock");
+            var table = new ConsoleTable("Product Id", "Product Name", "Price", "Left in Stock");
 
             var currentColor = Console.ForegroundColor;
             foreach(Item i in productItems)
@@ -82,7 +80,7 @@ namespace StoreUI
         }
         private void PlaceOrders()
         {
-            Customer customer = SearchCustomer();
+            //Customer customer = SearchCustomer();
             Location location = SearchBranch();
 
             //loction --> inventory --> product (locationId)
@@ -92,16 +90,14 @@ namespace StoreUI
             DisplayProducts(location);
 
             //ToDo - change date to timestamp instead of input
-            //DateTime orderDate = _validate.ValidateDate("Enter the order date [yyyy-mm-dd]:");
-            DateTime orderDate = new DateTime();
+            DateTime orderDate = _validate.ValidateDate("Enter the order date [yyyy-mm-dd]:");
+            //DateTime orderDate = new DateTime();
             Order newOrder = new Order(orderDate);
             Order createdOrder = _orderBL.AddOrder(customer, location, newOrder);
             Order curOrder = _orderBL.GetOrder(customer, location, newOrder);
         
             decimal total = 0;
             string input;
-
-
 
             total += AddItem(curOrder);
             Console.WriteLine($"Current Total: {total}");
@@ -125,7 +121,8 @@ namespace StoreUI
 
         private decimal AddItem(Order order)
         {
-            string productCode = _validate.ValidateEmptyInput("Please enter the [Product Id] for the item you want to buy");
+            string productCode = _validate.ValidateEmptyInput("Select a Bubble Tea from above table by Product Id");
+
             int id = Int32.Parse(productCode);
 
             int quantity = _validate.ValidateQuantity("Enter quantity for this item");
@@ -147,7 +144,7 @@ namespace StoreUI
 
         private Customer SearchCustomer()
         {
-            string phoneNumber = _validate.ValidateEmptyInput("Enter the customer phone number: ");
+            string phoneNumber = _validate.ValidateEmptyInput("Enter your phone number: ");
             try
             {
                 Customer customer = _customerBL.GetCustomer(phoneNumber);
@@ -162,7 +159,8 @@ namespace StoreUI
         }
         private Location SearchBranch()
         {
-            string name = _validate.ValidateEmptyInput("Enter the branch location name: ");
+            DisplayBranchLocations();
+            string name = _validate.ValidateEmptyInput("Select a location from above table by [Branch Location Name]");
             try
             {
                 Location branch = _locationBL.GetLocation(name);
@@ -180,28 +178,52 @@ namespace StoreUI
         {
             List<Item> orderItems = _orderBL.GetOrderItems(order);
             //orderItems.ForEach(i => Console.WriteLine(i.ToString()));
-            for (int i = 1; i < orderItems.Count; i++)
+            // for (int i = 1; i < orderItems.Count; i++)
+            // {
+            //     Console.WriteLine($"#{i} {orderItems[i]}");
+            // }
+
+           var currentColor = Console.ForegroundColor;
+           var table = new ConsoleTable("Product Id", "Name", "Price", "QTY", "$Amount");
+
+            foreach(Item i in orderItems)
             {
-                Console.WriteLine($"#{i} {orderItems[i]}");
+                table.AddRow(i.Product.Id, i.Product.Name, i.Product.Price, i.Quantity, i.Quantity * i.Product.Price);
+                Console.ForegroundColor = ConsoleColor.Blue;
             }
+            table.Write();
+            Console.ForegroundColor = currentColor;
         }
 
         private void ViewOrderByCustomer()
         {
-            Customer customer = SearchCustomer();
+            //Customer customer = SearchCustomer();
             string sortingCode = _validate.ValidateEmptyInput("Enter sorting code\n\t[0] - Sort by Order Cost ASC \n\t[1] - Sort by Order Cost DESC \n\t[2] - Sort by Order Date ASC \n\t[3] - Sort By Order Date DESC");
             List<Order> orders = _orderBL.GetAllOrderByCustomer(customer, sortingCode);
             
             //var table = new ConsoleTable();
-            for (int i = 1; i < orders.Count; i++)
+            // for (int i = 1; i < orders.Count; i++)
+            // {
+            //     Console.WriteLine($"#{i} {orders[i]}");
+            // }
+           var table = new ConsoleTable("Order Id", "Order Date", "Total", "Location Name", "Address");
+
+            var currentColor = Console.ForegroundColor;
+            foreach(Order o in orders)
             {
-                Console.WriteLine($"#{i} {orders[i]}");
+                table.AddRow(o.Id, o.OrderDate, o.Total, o.Location.Name, o.Location.Address);
+                Console.ForegroundColor = ConsoleColor.Blue;
+                ViewOrderDetails(o);
             }
+            table.Write();
+            Console.ForegroundColor = currentColor;
         }
         private void ViewOrderByLocation()
         {
             Location location = SearchBranch();
-            List<Order> orders = _orderBL.GetAllOrderByLocation(location);
+            string sortingCode = _validate.ValidateEmptyInput("Enter sorting code\n\t[0] - Sort by Order Cost ASC \n\t[1] - Sort by Order Cost DESC \n\t[2] - Sort by Order Date ASC \n\t[3] - Sort By Order Date DESC");
+
+            List<Order> orders = _orderBL.GetAllOrderByLocation(location, sortingCode);
             for (int i = 1; i < orders.Count; i++)
             {
                 Console.WriteLine($"#{i} {orders[i]}");
@@ -214,8 +236,22 @@ namespace StoreUI
             Item i = _inventoryBL.GetInventory(p);
             Console.WriteLine(i.Quantity);
             Console.WriteLine(p.Name);
-
         }
+        private void DisplayBranchLocations()
+        {
+            List<Location> locations = _locationBL.GetAllLocations();
+            var table = new ConsoleTable("Branch Id", "Branch Location Name", "Address");
+
+            var currentColor = Console.ForegroundColor;
+            foreach(Location l in locations)
+            {
+                table.AddRow(l.Id, l.Name, l.Address);
+                Console.ForegroundColor = ConsoleColor.Green;
+            }
+            table.Write();
+            Console.ForegroundColor = currentColor;
+        }
+
     }
 
 }

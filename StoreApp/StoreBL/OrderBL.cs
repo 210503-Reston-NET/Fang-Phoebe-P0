@@ -74,9 +74,33 @@ namespace StoreBL
             }
             return result;
         }
-        public List<Order> GetAllOrderByLocation(Location location)
+        public List<Order> GetAllOrderByLocation(Location location, string sortingCode)
         {
-            return _repo.GetAllOrderByLocation(location);
+            List<Order> result = _repo.GetAllOrderByLocation(location);
+            switch(sortingCode)
+            {
+                case "0" :
+                    result.Sort(delegate(Order a, Order b) {
+                        return a.Total.CompareTo(b.Total);
+                    });
+                    break;
+                case "1" :
+                    result.Sort(delegate(Order a, Order b) {
+                        return b.Total.CompareTo(a.Total);
+                    });
+                    break;
+                case "2" :
+                    result.Sort(delegate(Order a, Order b) {
+                        return a.OrderDate.CompareTo(b.OrderDate);
+                    });
+                    break;
+                case "3" :
+                    result.Sort(delegate(Order a, Order b) {
+                        return b.OrderDate.CompareTo(a.OrderDate);
+                    });
+                    break;
+            }
+            return result;
         }
     }
 }

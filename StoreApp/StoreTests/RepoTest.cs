@@ -51,8 +51,10 @@ namespace StoreAppTests
             using (var context = new Entity.StoreAppDBContext(options))
             {
                 IRepository _repo = new RepoDB(context);
-                _repo.UpdateInventory(1, 10);
-                var result = _repo.GetInventory(1);
+                Model.Product product = _repo.GetProductById(1);
+            
+                _repo.UpdateInventory(product, 10);
+                var result = _repo.GetInventory(product);
 
                 Assert.Equal(10, result.Quantity);
             }

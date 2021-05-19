@@ -37,8 +37,6 @@ namespace StoreUI
             IProductBL productBL = new ProductBL(repo);
             IInventoryBL inventoryBL = new InventoryBL(repo);
             IOrderBL orderBL = new OrderBL(repo);
-
-
         
             switch(menuType.ToLower())
             {
@@ -49,7 +47,7 @@ namespace StoreUI
                 case "product":
                     return new ProductMenu(productBL, inputValidation);
                 case "inventory":
-                    return new InventoryMenu(locationBL, productBL, inventoryBL, inputValidation);
+                    return new InventoryMenu(locationBL, productBL, inventoryBL, orderBL, inputValidation);
                  case "customer":
                     return new CustomerMenu(customerBL);
                 case "order":

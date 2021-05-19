@@ -14,6 +14,6 @@ namespace StoreBL
         // get a list of orders
         List<Item> GetOrderItems(Order order);
         List<Order> GetAllOrderByCustomer(Customer customer, string sortingCode);
-        List<Order> GetAllOrderByLocation(Location location);
+        List<Order> GetAllOrderByLocation(Location location, string sortingCode);
     }
 }

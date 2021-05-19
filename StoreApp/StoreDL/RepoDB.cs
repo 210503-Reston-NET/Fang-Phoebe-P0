@@ -20,7 +20,7 @@ namespace StoreDL
         {
             return _context.Locations
             .Select(
-                obj => new Model.Location(obj.Name, obj.Address)
+                obj => new Model.Location(obj.Id, obj.Name, obj.Address)
             ).ToList();
         }
         public Model.Location AddLocation(Model.Location location)
