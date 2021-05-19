@@ -49,7 +49,8 @@ namespace StoreUI
                         PlaceOrders();
                         break;                
                     case "2" : 
-                        ViewOrderByCustomer();
+                        //ViewOrderByCustomer();
+                        viewOrderHistories();
                         break;    
                     default:
                         Console.WriteLine("Invalid Input");
@@ -184,11 +185,11 @@ namespace StoreUI
             // }
 
            var currentColor = Console.ForegroundColor;
-           var table = new ConsoleTable("Product Id", "Name", "Price", "QTY", "$Amount");
+           var table = new ConsoleTable("Name", "Price", "QTY", "$Amount");
 
             foreach(Item i in orderItems)
             {
-                table.AddRow(i.Product.Id, i.Product.Name, i.Product.Price, i.Quantity, i.Quantity * i.Product.Price);
+                table.AddRow(i.Product.Name, i.Product.Price, i.Quantity, i.Quantity * i.Product.Price);
                 Console.ForegroundColor = ConsoleColor.Blue;
             }
             table.Write();
@@ -218,6 +219,33 @@ namespace StoreUI
             table.Write();
             Console.ForegroundColor = currentColor;
         }
+
+
+        private void viewOrderHistories()
+        {
+            string sortingCode = _validate.ValidateEmptyInput("Enter sorting code\n\t[0] - Sort by Order Cost ASC \n\t[1] - Sort by Order Cost DESC \n\t[2] - Sort by Order Date ASC \n\t[3] - Sort By Order Date DESC");
+            List<Order> orders = _orderBL.GetAllOrderByCustomer(customer, sortingCode);
+            foreach(Order o in orders)
+            {
+                Console.WriteLine($"OrderId: {o.Id} OrderDate: {o.OrderDate} OrderTotal:{o.Total} LocationName:{o.Location.Name} Address: {o.Location.Address}");
+                viewDetails(o);
+            }
+        }
+
+        private void viewDetails(Order order)
+        {
+            List<Item> orderItems = _orderBL.GetOrderItems(order);
+            //orderItems.ForEach(i => Console.WriteLine(i.ToString()));
+            // for (int i = 0; i < orderItems.Count; i++)
+            // {
+            //     Console.WriteLine($"#{i+1} ProductId: {}");
+            // }
+            foreach(Item i in orderItems)
+            {
+                Console.WriteLine($"\tName:{i.Product.Name} \tPrice:{i.Product.Price} \tQTY:{i.Quantity} \tTotal:{i.Product.Price * i.Quantity}");
+            }
+        }
+
         private void ViewOrderByLocation()
         {
             Location location = SearchBranch();

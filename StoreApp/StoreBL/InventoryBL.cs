@@ -45,7 +45,7 @@ namespace StoreBL
         public HashSet<Item> GetOutOfStockInventories(Location location)
         {
             HashSet<Item> inventories = _repo.GetAllInventories(location);
-            return inventories.Where(o => o.Quantity == 0).ToHashSet();
+            return inventories.Where(o => o.Quantity <= 0).ToHashSet();
         }
     }
 }

@@ -105,9 +105,9 @@ insert into inventories(quantity, locationId, productId) values
 (10, 5, 2 ),
 (10, 5, 3 ),
 (10, 5, 4 ),
-(10, 5, 5 ),
+(10, 5, 5 )
 
-(10, 1, 1 ),
+
 
 select * from locations
 select * from customers
@@ -122,6 +122,7 @@ select l.name as storelocation, p.Id, p.name productName, quantity
 from inventories i
 inner join products p on p.id = i.productId
 inner join locations l on l.id = i.locationId
+where quantity < 0
 
 --inner join orders, customer, location, orderitems, products
 select firstname, middlename, lastname, phoneNumber, l.name, o.id, orderDate, total

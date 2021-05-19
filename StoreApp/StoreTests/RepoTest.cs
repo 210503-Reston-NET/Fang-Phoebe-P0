@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using StoreDL;
 using Entity = StoreDL.Entities;
 using Model = StoreModels;
+using System.Collections.Generic;
 
 namespace StoreAppTests
 {
@@ -33,7 +34,26 @@ namespace StoreAppTests
                 Assert.Equal("Jia", result.FirstName);
             }
         }
-        
+
+        [Fact]
+        public void AddProduct()
+        {
+            using (var context = new Entity.StoreAppDBContext(options))
+            {
+                IRepository _repo = new RepoDB(context);
+                _repo.AddProduct(
+                    new Model.Product("BBT", 3.00m, "BBT01")
+                );
+            }
+            using (var assertContext = new Entity.StoreAppDBContext(options))
+            {
+                //IRepository _repo = new RepoDB(assertContext);
+                var result = assertContext.Products.FirstOrDefault(c => c.Id == 3);
+                Assert.NotNull(result);
+                Assert.Equal("BBT", result.Name);
+            }
+        }
+
         [Fact]
         public void GetCustomerByNameShouldReturnCorrespondingCustomer()
         {
@@ -41,10 +61,77 @@ namespace StoreAppTests
             {
                 IRepository _repo = new RepoDB(context);
                 var result = _repo.GetCustomer("2063317069");
+                Assert.NotNull(result);
                 Assert.Equal("Fang", result.LasttName);
             }
         }
+        [Fact]
+        public void GetProductById()
+        {
+            using (var context = new Entity.StoreAppDBContext(options))
+            {
+                IRepository _repo = new RepoDB(context);
+                Model.Product result = _repo.GetProductById(1);
+                Assert.NotNull(result);
+                Assert.Equal("j-g-t-s-01", result.Barcode);
+            }
+        }
 
+        [Fact]
+        public void GetProductByBarcode()
+        {
+            using (var context = new Entity.StoreAppDBContext(options))
+            {
+                IRepository _repo = new RepoDB(context);
+                Model.Product result = _repo.GetProduct("j-g-t-s-01");
+                Assert.NotNull(result);
+                Assert.Equal(1, result.Id);
+            }
+        }
+
+
+        [Fact]
+        public void GetLocationByName()
+        {
+            using (var context = new Entity.StoreAppDBContext(options))
+            {
+                IRepository _repo = new RepoDB(context);
+                Model.Location result = _repo.GetLocation("WA-Seattle");
+                Assert.NotNull(result);
+                Assert.Equal(1, result.Id);
+            }
+        }
+
+        [Fact]
+        public void GetAllInventories()
+        {
+            using (var context = new Entity.StoreAppDBContext(options))
+            {
+                IRepository _repo = new RepoDB(context);
+                Model.Location location = _repo.GetLocation("WA-Seattle");
+                HashSet<Model.Item> result = _repo.GetAllInventories(location);
+                Assert.NotNull(result);
+                Assert.Equal(1, result.Count);
+            }
+        }
+
+
+        [Fact]
+        public void GetAllBranchLocations()
+        {
+            using (var context = new Entity.StoreAppDBContext(options))
+            {
+                IRepository _repo = new RepoDB(context);
+                List<Model.Location> result = _repo.GetAllLocations();
+                Assert.NotNull(result);
+                Assert.Equal(1, result.Count);
+            }
+        }
+        
+        
+
+
+        
         [Fact]
         public void UpdateInventoryByProductId()
         {
@@ -56,6 +143,7 @@ namespace StoreAppTests
                 _repo.UpdateInventory(product, 10);
                 var result = _repo.GetInventory(product);
 
+                Assert.Equal("j-g-t-s-01", product.Barcode);
                 Assert.Equal(10, result.Quantity);
             }
         }
