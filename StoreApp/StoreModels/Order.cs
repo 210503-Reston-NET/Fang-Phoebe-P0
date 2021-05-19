@@ -8,38 +8,56 @@ namespace StoreModels
     /// </summary>
     public class Order
     {
-        private double _total;
-        public Order(Customer customer, DateTime orderdate, Location location, List<Item> items)
+        private decimal _total;
+        public Order()
+        {}
+        public Order(DateTime orderdate)
         {
-            //this.Total = item.Product.Price * item.Quantity;
-            this.Customer = customer;
             this.OrderDate = orderdate;
-            this.Location = location;
-            this.Items = items;
-            this.Total = _total;
+        }
+        public Order(DateTime orderdate, decimal total) : this(orderdate)
+        {
+            this.Total = total;
+        }
+        public Order(int id, DateTime orderdate, decimal total) : this(orderdate, total)
+        {
+            this.Id = id;
         }
 
+        public Order(int id, int customerId, int locationId, DateTime orderdate, decimal total) : this(id, orderdate, total)
+        {
+            this.CustomerId = customerId;
+            this.LocationId = locationId;
+        }
+        public int Id { get; set; }
+
+        public int CustomerId { get; set; }
+        public int LocationId { get; set; }
+
+        // public Customer Customer { get; set; }
+        // public Location Location { get; set; }
+        public decimal Total { get; set; }
+        public List<Item> Items { get; set; }
+        // public double Total 
+        // { 
+        //     get { return _total; }
+        //     set 
+        //     {
+        //         foreach(Item item in Items)
+        //         {
+        //          //   _total += item.Product.Price * item.Quantity;
+        //         }      
+        //     }
+        // }
         public Customer Customer { get; set; }
         public Location Location { get; set; }
-        public List<Item> Items { get; set; }
-        public double Total 
-        { 
-            get { return _total; }
-            set 
-            {
-                //_total = Item.Product.Price * Item.Quantity;
-            foreach(Item item in Items)
-            {
-                _total += item.Product.Price * item.Quantity;
-            }      
-          }
-        }
+
         public DateTime OrderDate { get; set; }
 
         //ToDo: view details of an order
         public override string ToString()
         {
-            return $"\nCustomer Name: {Customer.FullName} \nTotal: {Total} Location: {Location.ToString()}";
+            return $"\tCustomer Name: {Customer.FullName}\tBranch Location: {Location.Name}\tOrderId: {Id}\tOrderDate: {OrderDate.ToString("yyyy-MM-dd")}\tTotal: ${Total}";
         }
     }
 }

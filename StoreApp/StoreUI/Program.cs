@@ -8,5 +8,6 @@ namespace StoreUI
         {
             MenuFactory.GetMenu("main").Start();
         }
+    
     }
 }

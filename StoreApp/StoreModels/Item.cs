@@ -5,17 +5,26 @@ namespace StoreModels
     /// </summary>
     public class Item
     {
-        public Item(Product product, int quantity)
+        public Item()
+        {}
+
+        public Item(int Quantity)
         {
-            this.Product = product;
-            this.Quantity = quantity;
+            this.Quantity = Quantity;
         }
-        public Product Product { get; set; }
+        public Item(int id, int quantity) : this(quantity)
+        {
+            this.Id = id;
+        }
+        public int Id { get; set; }
+
         public int Quantity { get; set; }
+
+        public Product Product {get; set;}
 
         public override string ToString()
         {
-            return $"Produt: {Product.ToString()} Quality: {Quantity}";
+            return $"\t\t{Product.ToString()}\tQTY: {Quantity}\tAmount: ${Product.Price * Quantity}";
         }
     }
 }

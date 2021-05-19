@@ -5,20 +5,30 @@ namespace StoreModels
     /// </summary>
     public class Product
     {
-        public Product(string productname, double price) 
+        public Product()
         {
-            this.ProductName = productname;
-            this.Price = price;
         }
-        public string ProductName { get; set; }
-
-        //ToDo: validation - only have 2 decimals
-        public double Price { get; set; }
+        public Product(string name, decimal price, string barcode) 
+        {
+            this.Name = name;
+            this.Price = price;
+            this.Barcode = barcode;
+        }
+        
+        public Product(int id, string name, decimal price, string barcode) : this(name, price, barcode)
+        {
+            this.Id = id;
+        }
+        
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+        public string Barcode { get; set; }
+        public int Id { get; set; }
 
         //ToDo: add a category
         public override string ToString()
         {
-            return $"Product Name: {ProductName} Price: {Price}";
+            return $"Product Barcode:{Barcode}\tName: {Name}\tPrice: ${Price}";
         }
     }
 }

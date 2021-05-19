@@ -4,39 +4,41 @@ namespace StoreUI
 {
     public class MainMenu : IMenu
     {
-        private IMenu submenu;
+        private IMenu _submenu;
         public void Start()
         {
             bool repeat = true;
             do
             {
-                Console.WriteLine("Welcome to the Store App");
-                Console.WriteLine("Manage:");
-                Console.WriteLine("[1] Orders"); 
-                Console.WriteLine("[2] Stores");
-                Console.WriteLine("[3] Inventories"); 
-                Console.WriteLine("[4] Customers"); 
+                Console.WriteLine("Welcome to Happy Lemon Store App");
                 Console.WriteLine("[0] Exit the program");
+                Console.WriteLine("[1] To Branch Menu");
+                Console.WriteLine("[2] To Customer Menu");
+                Console.WriteLine("[3] To Product Menu");
+                Console.WriteLine("[4] To Order Menu");
                 string input = Console.ReadLine();
                 switch (input)
                 {
                     case "0" :
                         Console.WriteLine("Thanks for using the system. Goodbye");
                         repeat = false;
-                        break;                   
+                        break;   
                     case "1" : 
-                        submenu = MenuFactory.GetMenu("inventory");
-                        break;
+                        _submenu = MenuFactory.GetMenu("branch");
+                        _submenu.Start();
+                        break;                
                     case "2" : 
-                        submenu = MenuFactory.GetMenu("store");
-                        submenu.Start();
+                        _submenu = MenuFactory.GetMenu("customer");
+                        _submenu.Start();
                         break;    
                     case "3" : 
-                        submenu = MenuFactory.GetMenu("customer");
-                        break;
+                        _submenu = MenuFactory.GetMenu("product");
+                        _submenu.Start();
+                        break; 
                     case "4" : 
-                        submenu = MenuFactory.GetMenu("order");
-                        break;
+                        _submenu = MenuFactory.GetMenu("order");
+                        _submenu.Start();
+                        break;  
                     default:
                         Console.WriteLine("Invalid Input");
                         break;

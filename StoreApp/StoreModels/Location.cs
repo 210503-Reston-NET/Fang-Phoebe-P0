@@ -7,17 +7,25 @@ namespace StoreModels
     /// </summary>
     public class Location
     {
-        public Location(string locationName, Address address)
+        public Location()
+        { }
+        public Location(string name, string address)
         {
-            this.LocationName = locationName;
+            this.Name = name;
             this.Address = address;
         }
-        public string LocationName { get; set; }
-        public Address Address { get; set; }
+        public Location(int id, string name, string address) : this(name, address)
+        {
+            this.Id = id;
+        }
+
+        public string Name { get; set; }
+        public string Address { get; set; }
+        public int Id { get; private set; }
 
         public override string ToString()
         {
-            return $"\t Location Name: {LocationName} \n\t Address: {Address.ToString()}";
+            return $"\t Location Name: {Name} \n\t Address: {Address}";
         }
     }
 }
