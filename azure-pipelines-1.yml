@@ -20,8 +20,8 @@ steps:
       SonarCloud: 'Sonar Cloud'
       organization: '210503-reston-net'
       scannerMode: 'MSBuild'
-      projectKey: '210503-Reston-NET_Fang-Phoebe-P1'
-      projectName: 'Fang-Phoebe-P1'
+      projectKey: '210503-Reston-NET_Fang-Phoebe-P0'
+      projectName: 'Fang-Phoebe-P0'
       
   - task: DotNetCoreCLI@2
     displayName: Restore
@@ -54,11 +54,3 @@ steps:
       zipAfterPublish: true
       projects: '**/StoreApp/StoreUI/*.csproj'
       
-  - task: AzureRmWebAppDeployment@4
-    inputs:
-      ConnectionType: 'AzureRM'
-      azureSubscription: 'Azure service'
-      appType: 'webApp'
-      WebAppName: 'bbtApp'
-      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
-
